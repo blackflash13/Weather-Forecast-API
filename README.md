@@ -80,3 +80,25 @@ http://localhost:3000/api-docs
 - `EMAIL_USER` - Gmail address for sending emails
 - `EMAIL_PASS` - Gmail app-specific password
 - `WEATHER_API_KEY` - WeatherAPI.com API key
+
+## Testing
+
+The application includes comprehensive API endpoint tests. To run the tests:
+
+```bash
+npm test
+```
+
+The tests use Jest as the testing framework and Supertest for API testing. The tests verify:
+
+- Weather API endpoints:
+  - Getting weather data for a city
+  - Handling missing parameters
+  - Handling city not found errors
+  - Handling service errors
+
+- Subscription API endpoints:
+  - Creating new subscriptions
+  - Handling validation errors
+  - Confirming subscriptions
+  - Unsubscribing from weather updates
