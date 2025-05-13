@@ -1,6 +1,9 @@
 const crypto = require("crypto");
 const Subscription = require("../models/subscription");
-const { sendConfirmationEmail } = require("../services/emailService");
+const {
+    sendConfirmationEmail,
+    sendToUnsubscribeEmail,
+} = require("../services/emailService");
 
 const generateToken = () => crypto.randomBytes(16).toString("hex");
 
@@ -8,10 +11,13 @@ const subscribe = async (req, res) => {
     try {
         const { email, city, frequency } = req.body;
 
-        const existingSubscription = await Subscription.findOne({
-            email,
-            active: true,
-        });
+        const existingSubscription = await Subscription.findOne(
+            {
+                email,
+                active: true,
+            },
+            { _id: true },
+        );
         if (existingSubscription) {
             return res.status(409).json({
                 status: "error",
@@ -49,7 +55,10 @@ const subscribe = async (req, res) => {
 const confirmSubscription = async (req, res) => {
     try {
         const { token } = req.params;
-        const subscription = await Subscription.findOne({ token });
+        const subscription = await Subscription.findOne(
+            { token },
+            { _id: true, token: true, email: true },
+        );
 
         if (!subscription) {
             return res.status(404).json({
@@ -61,12 +70,15 @@ const confirmSubscription = async (req, res) => {
         subscription.confirmed = true;
         subscription.updated = Date.now();
         await subscription.save();
+        await sendToUnsubscribeEmail(subscription.email, subscription.token);
 
         res.status(200).json({
             status: "success",
             message: "Subscription confirmed successfully",
         });
     } catch (error) {
+        console.log(error);
+
         res.status(500).json({
             status: "error",
             message: "Error confirming subscription",
@@ -77,7 +89,10 @@ const confirmSubscription = async (req, res) => {
 const unsubscribe = async (req, res) => {
     try {
         const { token } = req.params;
-        const subscription = await Subscription.findOne({ token });
+        const subscription = await Subscription.findOne(
+            { token },
+            { _id: true },
+        );
 
         if (!subscription) {
             return res.status(404).json({
@@ -95,6 +110,8 @@ const unsubscribe = async (req, res) => {
             message: "Unsubscribed successfully",
         });
     } catch (error) {
+        console.log(error);
+
         res.status(500).json({
             status: "error",
             message: "Error unsubscribing",
