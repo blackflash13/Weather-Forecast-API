@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const swaggerOptions = {
     swaggerDefinition: {
-        openapi: "2.0",
+        openapi: "3.0.0",
         info: {
             title: "Weather Forecast API",
             version: "1.0.0",

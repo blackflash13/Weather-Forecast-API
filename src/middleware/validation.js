@@ -11,7 +11,6 @@ const weatherQuerySchema = Joi.object({
 });
 
 const validateSubscription = (req, res, next) => {
-    console.log("BODY", req.body);
     const { error } = subscriptionSchema.validate(req.body);
 
     if (error) {
