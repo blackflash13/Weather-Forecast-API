@@ -1,42 +1,14 @@
-const crypto = require("crypto");
-const Subscription = require("../models/subscription");
 const {
-    sendConfirmationEmail,
-    sendToUnsubscribeEmail,
-} = require("../services/emailService");
-
-const generateToken = () => crypto.randomBytes(16).toString("hex");
+    createSubscription: createSubscriptionService,
+    confirmSubscription: confirmSubscriptionService,
+    unsubscribe: unsubscribeService,
+} = require("../services/subscriptionService");
 
 const subscribe = async (req, res) => {
     try {
         const { email, city, frequency } = req.body;
 
-        const existingSubscription = await Subscription.findOne(
-            {
-                email,
-                active: true,
-            },
-            { _id: true },
-        );
-        if (existingSubscription) {
-            return res.status(409).json({
-                status: "error",
-                message: "Email already subscribed",
-            });
-        }
-
-        const token = generateToken();
-
-        const subscription = new Subscription({
-            email,
-            city,
-            frequency,
-            token,
-            confirmed: false,
-        });
-
-        await subscription.save();
-        await sendConfirmationEmail(email, token);
+        await createSubscriptionService(email, city, frequency);
 
         res.status(200).json({
             status: "success",
@@ -45,6 +17,14 @@ const subscribe = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
+
+        if (error.status === 409) {
+            return res.status(409).json({
+                status: "error",
+                message: "Email already subscribed",
+            });
+        }
+
         res.status(500).json({
             status: "error",
             message: "Error creating subscription",
@@ -55,22 +35,8 @@ const subscribe = async (req, res) => {
 const confirmSubscription = async (req, res) => {
     try {
         const { token } = req.params;
-        const subscription = await Subscription.findOne(
-            { token },
-            { _id: true, token: true, email: true },
-        );
 
-        if (!subscription) {
-            return res.status(404).json({
-                status: "error",
-                message: "Token not found",
-            });
-        }
-
-        subscription.confirmed = true;
-        subscription.updated = Date.now();
-        await subscription.save();
-        await sendToUnsubscribeEmail(subscription.email, subscription.token);
+        await confirmSubscriptionService(token);
 
         res.status(200).json({
             status: "success",
@@ -78,6 +44,13 @@ const confirmSubscription = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
+
+        if (error.status === 404) {
+            return res.status(404).json({
+                status: "error",
+                message: "Token not found",
+            });
+        }
 
         res.status(500).json({
             status: "error",
@@ -89,21 +62,8 @@ const confirmSubscription = async (req, res) => {
 const unsubscribe = async (req, res) => {
     try {
         const { token } = req.params;
-        const subscription = await Subscription.findOne(
-            { token },
-            { _id: true },
-        );
 
-        if (!subscription) {
-            return res.status(404).json({
-                status: "error",
-                message: "Token not found",
-            });
-        }
-
-        subscription.active = false;
-        subscription.updated = Date.now();
-        await subscription.save();
+        await unsubscribeService(token);
 
         res.status(200).json({
             status: "success",
@@ -111,6 +71,13 @@ const unsubscribe = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
+
+        if (error.status === 404) {
+            return res.status(404).json({
+                status: "error",
+                message: "Token not found",
+            });
+        }
 
         res.status(500).json({
             status: "error",
