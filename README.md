@@ -1,9 +1,8 @@
 # Weather Forecast API
 
-
 A Node.js application that allows users to subscribe to weather updates for their city. The application uses WeatherAPI.com to fetch weather data and sends email updates to subscribed users.
 
-**Deployed on Vercel:** [https://flash-weather-forecast-2wjdfynah-blackflash13s-projects.vercel.app/](https://flash-weather-forecast-2wjdfynah-blackflash13s-projects.vercel.app/)
+**Deployed on Vercel:** [https://flash-weather-forecast-api.vercel.app/](https://flash-weather-forecast-api.vercel.app/)
 
 
 ## Features
