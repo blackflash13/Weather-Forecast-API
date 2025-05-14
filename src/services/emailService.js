@@ -1,5 +1,9 @@
 const nodemailer = require("nodemailer");
 
+const HOST_URL = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : process.env.HOST_URL;
+
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -9,7 +13,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const sendConfirmationEmail = async (email, city, token) => {
-    const confirmationUrl = `${process.env.HOST_URL}/api/confirm/${token}`;
+    const confirmationUrl = `${HOST_URL}/api/confirm/${token}`;
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
@@ -26,7 +30,7 @@ const sendConfirmationEmail = async (email, city, token) => {
 };
 
 const sendSubscriptionConfirmedEmail = async (email, token, city) => {
-    const unsubscribeUrl = `${process.env.HOST_URL}/api/unsubscribe/${token}`;
+    const unsubscribeUrl = `${HOST_URL}/api/unsubscribe/${token}`;
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
@@ -44,7 +48,7 @@ const sendSubscriptionConfirmedEmail = async (email, token, city) => {
 };
 
 const sendUnsubscribeEmail = async (email, city) => {
-    const resubscribeUrl = `${process.env.HOST_URL}/api/subscribe`;
+    const resubscribeUrl = `${HOST_URL}/api/subscribe`;
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
