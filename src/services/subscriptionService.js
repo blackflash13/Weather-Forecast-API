@@ -3,6 +3,7 @@ const Subscription = require("../models/subscription");
 const {
     sendConfirmationEmail,
     sendSubscriptionConfirmedEmail,
+    sendUnsubscribeEmail,
 } = require("./emailService");
 
 /**
@@ -20,7 +21,7 @@ const generateToken = () => crypto.randomBytes(16).toString("hex");
  */
 const createSubscription = async (email, city, frequency) => {
     const existingSubscription = await Subscription.findOne(
-        { email, active: true },
+        { email, city, active: true },
         { _id: true },
     );
 
@@ -41,8 +42,8 @@ const createSubscription = async (email, city, frequency) => {
         confirmed: false,
     });
 
+    await sendConfirmationEmail(email, city, token);
     await subscription.save();
-    await sendConfirmationEmail(email, token);
 
     return subscription;
 };
@@ -54,8 +55,8 @@ const createSubscription = async (email, city, frequency) => {
  */
 const confirmSubscription = async (token) => {
     const subscription = await Subscription.findOne(
-        { token },
-        { _id: true, token: true, email: true },
+        { token, confirmed: false, active: true },
+        { _id: true, token: true, email: true, city: true },
     );
 
     if (!subscription) {
@@ -68,11 +69,13 @@ const confirmSubscription = async (token) => {
 
     subscription.confirmed = true;
     subscription.updated = Date.now();
-    await subscription.save();
+
     await sendSubscriptionConfirmedEmail(
         subscription.email,
         subscription.token,
+        subscription.city,
     );
+    await subscription.save();
 
     return subscription;
 };
@@ -83,7 +86,10 @@ const confirmSubscription = async (token) => {
  * @returns {Promise<Object>} - Updated subscription
  */
 const unsubscribe = async (token) => {
-    const subscription = await Subscription.findOne({ token }, { _id: true });
+    const subscription = await Subscription.findOne(
+        { token, active: true },
+        { _id: true, email: true, city: true },
+    );
 
     if (!subscription) {
         const notFoundError = {
@@ -95,6 +101,8 @@ const unsubscribe = async (token) => {
 
     subscription.active = false;
     subscription.updated = Date.now();
+
+    await sendUnsubscribeEmail(subscription.email, subscription.city);
     await subscription.save();
 
     return {

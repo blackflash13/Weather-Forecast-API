@@ -8,7 +8,7 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-const sendConfirmationEmail = async (email, token) => {
+const sendConfirmationEmail = async (email, city, token) => {
     const confirmationUrl = `${process.env.HOST_URL}/api/confirm/${token}`;
 
     const mailOptions = {
@@ -17,7 +17,7 @@ const sendConfirmationEmail = async (email, token) => {
         subject: "Confirm your weather subscription",
         html: `
       <h1>Welcome to Weather Forecast API!</h1>
-      <p>Please click the link below to confirm your subscription:</p>
+      <p>Please click the link below to confirm your subscription for weather updates for ${city}:</p>
       <a href="${confirmationUrl}">Confirm Subscription</a>
     `,
     };
@@ -25,7 +25,7 @@ const sendConfirmationEmail = async (email, token) => {
     return transporter.sendMail(mailOptions);
 };
 
-const sendSubscriptionConfirmedEmail = async (email, token) => {
+const sendSubscriptionConfirmedEmail = async (email, token, city) => {
     const unsubscribeUrl = `${process.env.HOST_URL}/api/unsubscribe/${token}`;
 
     const mailOptions = {
@@ -34,9 +34,27 @@ const sendSubscriptionConfirmedEmail = async (email, token) => {
         subject: "Weather Forecast Subscription Confirmed!",
         html: `
       <h1>Welcome to Weather Forecast Updates!</h1>
-      <p>You will be subscribed to receive weather updates.</p>
+      <p>You will be subscribed to receive weather updates for ${city}.</p>
       <p>If you want to unsubscribe, click the link below:</p>
       <a href="${unsubscribeUrl}">Unsubscribe</a>
+    `,
+    };
+
+    return transporter.sendMail(mailOptions);
+};
+
+const sendUnsubscribeEmail = async (email, city) => {
+    const resubscribeUrl = `${process.env.HOST_URL}/api/subscribe`;
+
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: "We're sad to see you go!",
+        html: `
+      <h1>You've been unsubscribed from Weather Forecast Updates</h1>
+      <p>We're so sad to see you go! Your weather updates for ${city} have been canceled.</p>
+      <p>Changed your mind? You can resubscribe at any time:</p>
+      <a href="${resubscribeUrl}">Resubscribe to Weather Updates</a>
     `,
     };
 
@@ -46,4 +64,5 @@ const sendSubscriptionConfirmedEmail = async (email, token) => {
 module.exports = {
     sendConfirmationEmail,
     sendSubscriptionConfirmedEmail,
+    sendUnsubscribeEmail,
 };
