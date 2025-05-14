@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 
-const HOST_URL = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
+const HOST_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
     : process.env.HOST_URL;
 
 const transporter = nodemailer.createTransport({
@@ -48,7 +48,7 @@ const sendSubscriptionConfirmedEmail = async (email, token, city) => {
 };
 
 const sendUnsubscribeEmail = async (email, city) => {
-    const resubscribeUrl = `${HOST_URL}/api/subscribe`;
+    const resubscribeUrl = `${process.env.HOST_URL}/api/subscribe`;
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
