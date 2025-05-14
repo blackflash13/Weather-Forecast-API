@@ -3,13 +3,10 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
+const path = require("path");
 require("dotenv").config();
 
 const app = express();
-
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 const swaggerOptions = {
     swaggerDefinition: {
@@ -28,7 +25,6 @@ const swaggerOptions = {
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 mongoose
     .connect(process.env.MONGODB_URI, {
@@ -38,6 +34,11 @@ mongoose
     .then(() => console.log("Connected to MongoDB"))
     .catch((err) => console.error("MongoDB connection error:", err));
 
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "../public")));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use("/api", require("./routes/subscription"));
 app.use("/api/weather", require("./routes/weather"));
 

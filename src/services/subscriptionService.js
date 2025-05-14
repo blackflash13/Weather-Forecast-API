@@ -5,7 +5,7 @@ const {
     sendSubscriptionConfirmedEmail,
     sendUnsubscribeEmail,
 } = require("./emailService");
-
+const { getWeatherForCity } = require("./weatherService");
 /**
  * Generate a random token
  * @returns {string} - Random hex token
@@ -32,6 +32,8 @@ const createSubscription = async (email, city, frequency) => {
         };
         throw duplicateError;
     }
+
+    await getWeatherForCity(city);
 
     const token = generateToken();
     const subscription = new Subscription({
