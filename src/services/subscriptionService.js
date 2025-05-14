@@ -2,7 +2,7 @@ const crypto = require("crypto");
 const Subscription = require("../models/subscription");
 const {
     sendConfirmationEmail,
-    sendToUnsubscribeEmail,
+    sendSubscriptionConfirmedEmail,
 } = require("./emailService");
 
 /**
@@ -69,7 +69,10 @@ const confirmSubscription = async (token) => {
     subscription.confirmed = true;
     subscription.updated = Date.now();
     await subscription.save();
-    await sendToUnsubscribeEmail(subscription.email, subscription.token);
+    await sendSubscriptionConfirmedEmail(
+        subscription.email,
+        subscription.token,
+    );
 
     return subscription;
 };

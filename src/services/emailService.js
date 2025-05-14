@@ -25,7 +25,7 @@ const sendConfirmationEmail = async (email, token) => {
     return transporter.sendMail(mailOptions);
 };
 
-const sendToUnsubscribeEmail = async (email, token) => {
+const sendSubscriptionConfirmedEmail = async (email, token) => {
     const unsubscribeUrl = `${process.env.HOST_URL}/api/unsubscribe/${token}`;
 
     const mailOptions = {
@@ -45,5 +45,5 @@ const sendToUnsubscribeEmail = async (email, token) => {
 
 module.exports = {
     sendConfirmationEmail,
-    sendToUnsubscribeEmail,
+    sendSubscriptionConfirmedEmail,
 };
