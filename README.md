@@ -53,6 +53,51 @@ npm run dev
 npm start
 ```
 
+## Running with Docker
+
+### Using Docker Compose (Recommended)
+
+This method runs both the application and MongoDB in separate containers:
+
+1. Make sure Docker and Docker Compose are installed on your system
+2. Create a `.env` file with your environment variables:
+
+```
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASS=your-email-password
+WEATHER_API_KEY=your-weather-api-key
+```
+
+3. Build and start the containers:
+
+```bash
+docker-compose up -d
+```
+
+4. Access the application at `http://localhost:3000`
+
+### Using Docker Only
+
+If you want to run just the application container:
+
+1. Build the Docker image:
+
+```bash
+docker build -t weather-api .
+```
+
+2. Run the container:
+
+```bash
+docker run -p 3000:3000 --env-file .env weather-api
+```
+
+Note: When using Docker only, you'll need to provide a MongoDB connection string to a MongoDB instance in your `.env` file:
+
+```
+MONGODB_URI=mongodb://your-mongodb-host:27017/weather-api
+```
+
 ## API Documentation
 
 Once the application is running, you can access the Swagger documentation at:

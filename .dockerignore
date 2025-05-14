@@ -1,0 +1,13 @@
+node_modules
+npm-debug.log
+.git
+.env
+.vscode
+coverage
+__tests__
+*.md
+.gitignore
+.eslintrc.json
+.prettierrc
+.prettierignore
+.eslintignore 

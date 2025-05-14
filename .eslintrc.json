@@ -17,7 +17,7 @@
         "object-curly-spacing": ["error", "always"],
         "semi": ["error", "always"],
         "quotes": ["error", "double"],
-        "indent": ["error", 2],
+        "indent": ["error", 4],
         "comma-dangle": ["error", "always-multiline"],
         "arrow-parens": ["error", "always"],
         "no-var": "error",
