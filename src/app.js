@@ -6,6 +6,9 @@ const swaggerJsDoc = require("swagger-jsdoc");
 const path = require("path");
 require("dotenv").config();
 
+const subscriptionRoutes = require("./routes/subscription");
+const weatherRoutes = require("./routes/weather");
+
 const app = express();
 
 const swaggerOptions = {
@@ -39,8 +42,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "../public")));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-app.use("/api", require("./routes/subscription"));
-app.use("/api/weather", require("./routes/weather"));
+app.use("/api", subscriptionRoutes);
+app.use("/api/weather", weatherRoutes);
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
