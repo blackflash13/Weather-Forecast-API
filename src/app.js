@@ -6,10 +6,11 @@ const swaggerJsDoc = require("swagger-jsdoc");
 const path = require("path");
 require("dotenv").config();
 
+const app = express();
+
 const subscriptionRoutes = require("./routes/subscription");
 const weatherRoutes = require("./routes/weather");
-
-const app = express();
+const pageRoutes = require("./routes/pages");
 
 const swaggerOptions = {
     swaggerDefinition: {
@@ -41,9 +42,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "../public")));
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+app.use("/", pageRoutes);
 app.use("/api", subscriptionRoutes);
 app.use("/api/weather", weatherRoutes);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
