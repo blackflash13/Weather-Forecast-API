@@ -48,7 +48,7 @@ const sendSubscriptionConfirmedEmail = async (email, token, city) => {
 };
 
 const sendUnsubscribeEmail = async (email, city) => {
-    const resubscribeUrl = `${process.env.HOST_URL}/api/subscribe`;
+    const resubscribeUrl = `${HOST_URL}`;
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
