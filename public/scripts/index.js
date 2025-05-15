@@ -27,16 +27,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 const data = await response.json();
 
-                if (response.ok) {
-                    messageDiv.innerHTML = `
-                        <div class="alert alert-success">
-                            ${data.message || "Subscription created! Please check your email to confirm."}
-                        </div>
-                    `;
-                    subscriptionForm.reset();
-                } else {
+                if (!response.ok) {
                     throw new Error(data.message || "Something went wrong");
                 }
+
+                messageDiv.innerHTML = `
+                    <div class="alert alert-success">
+                        ${data.message || "Subscription created! Please check your email to confirm."}
+                    </div>
+                `;
+                subscriptionForm.reset();
             } catch (error) {
                 messageDiv.innerHTML = `
                     <div class="alert alert-danger">

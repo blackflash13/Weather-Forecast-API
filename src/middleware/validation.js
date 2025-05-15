@@ -16,7 +16,7 @@ const validateSubscription = (req, res, next) => {
     if (error) {
         return res.status(400).json({
             status: "error",
-            message: error.details[0].message,
+            message: "Invalid input",
         });
     }
 
@@ -29,7 +29,7 @@ const validateWeatherQuery = (req, res, next) => {
     if (error) {
         return res.status(400).json({
             status: "error",
-            message: error.details[0].message,
+            message: "Invalid input",
         });
     }
 

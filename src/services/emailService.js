@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const sendConfirmationEmail = async (email, city, token) => {
-    const confirmationUrl = `${HOST_URL}/api/confirm/${token}`;
+    const confirmationUrl = `${HOST_URL}/confirm?token=${token}`;
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
@@ -30,7 +30,7 @@ const sendConfirmationEmail = async (email, city, token) => {
 };
 
 const sendSubscriptionConfirmedEmail = async (email, token, city) => {
-    const unsubscribeUrl = `${HOST_URL}/api/unsubscribe/${token}`;
+    const unsubscribeUrl = `${HOST_URL}/unsubscribe?token=${token}`;
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
